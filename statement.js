@@ -1,30 +1,27 @@
 import connection from "./database.js";
+import { authorizationSchema } from "./schemas.js";
+import acceptanceError from './acceptanceError.js';
 
 async function getStatement(req,res){
-  const fetchQuery = `
-    SELECT 
-      "idUser", 
-      value, 
-      "createdAt", 
-      description , 
-      'expenditure' AS "transactionType"
-    FROM expenditures
+  try{
+  const {value: authorization, error: authorizationError} = authorizationSchema.validate(req.headers.authorization);
+  if (authorizationError) throw new acceptanceError(400);
+  const token = authorization.replace('Bearer ',"");
 
-    UNION 
-
-    SELECT 
-      "idUser", 
-      value, 
-      "createdAt", 
-      description , 
-      'earning' AS "transactionType"
-    FROM earnings
-
+  const dbStatement = await connection.query(`
+    SELECT logs.*
+    FROM logs
+    JOIN sessions 
+    ON sessions.token = $1
     ORDER BY "createdAt"
-  ;`;
+  ;`,[token]);
 
-  const dbStatement = await connection.query(fetchQuery);
-  res.send(dbStatement.rows)
+  res.send(dbStatement.rows);
+  } catch(e) {
+    if (e.status) res.sendStatus(e.status);
+    else res.sendStatus(500);
+    console.log(e);
+  }
 }
 
 export {
