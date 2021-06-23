@@ -25,15 +25,16 @@ export default async function login(req,res){
       throw new acceptanceError(401);
 
     const token = uuidv4();
-    const userId = userFound.id;
+    const id = userFound.id;
 
     await connection.query(`
       INSERT INTO sessions
       ("userId", token)
       VALUES ($1, $2)
-    ;`,[userId, token]);
+    ;`,[id, token]);
 
-    res.send({id: userId, token, name: userFound.name});
+    const {name, email} = userFound;
+    res.send({id, token, name, email});
   } catch (e) {
     if (e.status) res.sendStatus(e.status);
     else res.sendStatus(500);
