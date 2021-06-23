@@ -13,6 +13,7 @@ async function getLogs(req,res){
     FROM logs
     JOIN sessions 
     ON sessions.token = $1
+    WHERE sessions."userId" = logs."userId"
     ORDER BY "createdAt" DESC
   ;`,[token]);
 
