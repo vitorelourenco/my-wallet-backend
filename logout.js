@@ -4,9 +4,9 @@ import { authorizationSchema } from "./schemas.js";
 
 export default async function logout(req,res){
   try {
-    const {authorization, authorizationError} = authorizationSchema.validate(req.headers.authorization);
-    const token = authorization.token.replace("Bearer ","");
-    if (authorizationError) throw new acceptanceError;
+    const {value: authorization, error: authorizationError} = authorizationSchema.validate(req.headers["authorization"]);
+    if (authorizationError) throw new acceptanceError(400);
+    const token = authorization.replace("Bearer ","");
     await connection.query(`
       DELETE FROM sessions
       WHERE token = $1
