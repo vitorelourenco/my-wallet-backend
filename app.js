@@ -2,8 +2,8 @@ import cors from "cors";
 import express from "express";
 import { postNewLog, getLogs } from "./logs.js";
 import addUser from "./signup.js";
-import login from './login.js';
-import logout from './logout.js';
+import login from "./login.js";
+import logout from "./logout.js";
 
 const app = express();
 app.use(express.json());
