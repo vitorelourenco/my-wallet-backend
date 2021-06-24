@@ -21,7 +21,4 @@ app.post("/login", (req, res) => login(req, res));
 
 app.post("/logout", (req, res) => logout(req, res));
 
-const port = 4000;
-app.listen(port, () =>
-  console.log(`my-wallet server is listening on port ${port}`)
-);
+export default app;
