@@ -10,7 +10,22 @@ async function getLogs(req, res) {
 
     const token = authorization.replace("Bearer ", "");
 
-    const dbStatement = await connection.query(
+    const dbUser = await connection.query(
+      `
+      SELECT sessions."userId"
+      FROM sessions 
+      JOIN users 
+      ON sessions."userId" = users.id
+      WHERE token = $1
+    ;`,
+      [token]
+    );
+
+    const user = dbUser.rows[0];
+    if (typeof user !== "object" || !user.userId)
+      throw new errorWithStatus(404);
+
+    const dbLogs = await connection.query(
       `
     SELECT logs.*
     FROM logs
@@ -22,7 +37,7 @@ async function getLogs(req, res) {
       [token]
     );
 
-    res.send(dbStatement.rows);
+    res.send(dbLogs.rows);
   } catch (err) {
     if (err.status) res.sendStatus(err.status);
     else res.sendStatus(500);
@@ -58,7 +73,8 @@ async function postNewLog(req, res) {
     );
 
     const user = dbUser.rows[0];
-    if (typeof user !== "object" || !user.userId) throw new errorWithStatus(404);
+    if (typeof user !== "object" || !user.userId)
+      throw new errorWithStatus(404);
 
     const dbNewEntry = await connection.query(
       `
