@@ -1,9 +1,10 @@
-import { afterAll, beforeEach } from "@jest/globals";
+import { afterAll } from "@jest/globals";
 import supertest from "supertest";
 import app from "../src/app.js";
 import connection from "../src/database.js";
 import { v4 as uuidv4 } from "uuid";
 import joi from "joi";
+import bcrypt from 'bcrypt';
 
 const logFromDatabaseSchema = joi.object({
   id: joi.number().integer().min(1).required(),
@@ -47,7 +48,7 @@ beforeAll(async () => {
     DELETE FROM users
     WHERE email = 'test@logs.com'
   `);
-  
+
   id = undefined;
   token = undefined;
   //
@@ -56,8 +57,8 @@ beforeAll(async () => {
     INSERT INTO users
     (name, email, password)
     VALUES
-    ('autoTester', 'test@logs.com', 'test')
-  `);
+    ('autoTester', 'test@logs.com', $1)
+  `,[bcrypt.hashSync('test', 10)]);
   //
   //get the id for the newly created test account
   const dbId = await connection.query(`
