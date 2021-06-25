@@ -1,10 +1,11 @@
-import { afterAll } from "@jest/globals";
 import supertest from "supertest";
-import app from "../src/app.js";
-import connection from "../src/database.js";
 import { v4 as uuidv4 } from "uuid";
 import joi from "joi";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+import { afterAll } from "@jest/globals";
+
+import app from "../src/app.js";
+import connection from "../src/database.js";
 
 const logFromDatabaseSchema = joi.object({
   id: joi.number().integer().min(1).required(),
@@ -53,12 +54,15 @@ beforeAll(async () => {
   token = undefined;
   //
   //create test account using test@logs.com as email
-  await connection.query(`
+  await connection.query(
+    `
     INSERT INTO users
     (name, email, password)
     VALUES
     ('autoTester', 'test@logs.com', $1)
-  `,[bcrypt.hashSync('test', 10)]);
+  `,
+    [bcrypt.hashSync("test", 10)]
+  );
   //
   //get the id for the newly created test account
   const dbId = await connection.query(`

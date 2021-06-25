@@ -1,5 +1,6 @@
 import cors from "cors";
 import express from "express";
+
 import { postNewLog, getLogs } from "./logs.js";
 import addUser from "./signup.js";
 import login from "./login.js";

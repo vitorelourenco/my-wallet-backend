@@ -1,6 +1,7 @@
+import bcrypt from "bcrypt";
+
 import { newUserSchema } from "./schemas.js";
 import connection from "./database.js";
-import bcrypt from "bcrypt";
 import errorWithStatus from "./errorWithStatus.js";
 
 export default async function addUser(req, res) {

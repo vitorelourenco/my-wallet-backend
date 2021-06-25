@@ -1,7 +1,8 @@
-import { loginSchema } from "./schemas.js";
-import connection from "./database.js";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
+
+import { loginSchema } from "./schemas.js";
+import connection from "./database.js";
 import errorWithStatus from "./errorWithStatus.js";
 
 export default async function login(req, res) {
