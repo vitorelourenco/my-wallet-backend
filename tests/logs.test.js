@@ -20,35 +20,10 @@ let id;
 let token;
 
 beforeAll(async () => {
-  //cleanup data from previous tests
-  //that used test@logs.com as email
-  await connection.query(
-    `
-    DELETE FROM sessions
-    WHERE "userId" 
-    IN (
-      SELECT id
-      FROM users
-      WHERE users.email = 'test@logs.com'
-    )
-  `
-  );
-  await connection.query(
-    `
-    DELETE FROM logs
-    WHERE "userId" 
-    IN (
-      SELECT id
-      FROM users
-      WHERE users.email = 'test@logs.com'
-    )
-  `
-  );
-
-  await connection.query(`
-    DELETE FROM users
-    WHERE email = 'test@logs.com'
-  `);
+  //clear test database
+  await connection.query(`DELETE FROM sessions`);
+  await connection.query(`DELETE FROM logs`);
+  await connection.query(`DELETE FROM users`);
 
   id = undefined;
   token = undefined;
