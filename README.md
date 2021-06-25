@@ -26,7 +26,7 @@ My Wallet is a log-book web app for earnings and expenditures. Users can sign up
 - As of right now, it seems Jest has no support for async/await out of the box. The dependency "@babel/plugin-transform-runtime" will take care of it and it will be installed upon $ npm i but remember to include:   "plugins": [ "@babel/plugin-transform-runtime" ] in your babel configuration file if you feel like using a different one. 
 
 ## Dependencies
-- All dependencies are listed in the pacjage.json file.
+- All dependencies are listed in the package.json file.
 
 ## One final note
 - Anyone is welcome to clone this repo and use this code however they like. I maintain this README for others but mostly for myself, hence the odd Things That Can Go Wrong session. I like keeping track of the problems and solutions i've ran across so i don't have to put on my google-fu kimono all the time.  
