@@ -83,7 +83,7 @@ describe("GET /logs", () => {
 
   it("returns valid list of logs when all requests are sucessful", async () => {
     const headers = { Authorization: `Bearer ${token}` };
-    //post two new logs testing
+    //post two new logs for testing
     const bodyEarning = { value: 1, description: "test earning" };
     await supertest(app)
       .post("/logs/earning/new")
@@ -96,16 +96,16 @@ describe("GET /logs", () => {
       .set(headers);
     //
     const results = await supertest(app).get("/logs").set(headers);
-    const hasFailed = (() => {
+    const responseBodyError = (() => {
       for (let i = 0; i < results.length; i++) {
         const { error: responseBodyError } =
           logFromDatabaseSchema.validate(result);
-        if (responseBodyError !== undefined) return true;
+        if (responseBodyError !== undefined) return responseBodyError;
       }
-      return false;
+      return undefined;
     })();
 
-    expect(hasFailed).toEqual(false);
+    expect(responseBodyError).toEqual(undefined);
   });
 
   it("returns status 401 for invalid header", async () => {
@@ -120,6 +120,7 @@ describe("GET /logs", () => {
     expect(result.status).toEqual(404);
   });
 });
+
 
 describe("POST /logs/:logKind=earning/new", () => {
   it("returns status 201 for valid new earning", async () => {
@@ -157,7 +158,7 @@ describe("POST /logs/:logKind=earning/new", () => {
 
   it("returns status 400 for invalid new earning value", async () => {
     const headers = { Authorization: `Bearer ${token}` };
-    const body = { value: "test string", description: "test earning" };
+    const body = { value: -1, description: "test earning" };
     const result = await supertest(app)
       .post("/logs/earning/new")
       .send(body)
@@ -167,7 +168,7 @@ describe("POST /logs/:logKind=earning/new", () => {
 
   it("returns status 400 for invalid new earning description", async () => {
     const headers = { Authorization: `Bearer ${token}` };
-    const body = { value: 100, description: {} };
+    const body = { value: 100, description: "" };
     const result = await supertest(app)
       .post("/logs/earning/new")
       .send(body)
@@ -181,6 +182,73 @@ describe("POST /logs/:logKind=earning/new", () => {
     const body = { value: 100, description: "test earning" };
     const result = await supertest(app)
       .post("/logs/earning/new")
+      .send(body)
+      .set(headers);
+    expect(result.status).toEqual(404);
+  });
+});
+
+
+describe("POST /logs/:logKind=expenditure/new", () => {
+  it("returns status 201 for valid new expenditure", async () => {
+    const headers = { Authorization: `Bearer ${token}` };
+    const body = { value: 1, description: "test expenditure" };
+    const result = await supertest(app)
+      .post("/logs/expenditure/new")
+      .send(body)
+      .set(headers);
+    expect(result.status).toEqual(201);
+  });
+
+  it("returns valid new log when post new expenditure succeds", async () => {
+    const headers = { Authorization: `Bearer ${token}` };
+    const body = { value: 1, description: "test expenditure" };
+    const result = await supertest(app)
+      .post("/logs/expenditure/new")
+      .send(body)
+      .set(headers);
+    const { error: responseBodyError } = logFromDatabaseSchema.validate(
+      result.body
+    );
+    expect(responseBodyError).toEqual(undefined);
+  });
+
+  it("returns status 401 for invalid header", async () => {
+    const headers = { Authorization: `Bearer` };
+    const body = { value: 1, description: "test expenditure" };
+    const result = await supertest(app)
+      .post("/logs/expenditure/new")
+      .send(body)
+      .set(headers);
+    expect(result.status).toEqual(401);
+  });
+
+  it("returns status 400 for invalid new expenditure value", async () => {
+    const headers = { Authorization: `Bearer ${token}` };
+    const body = { value: -1, description: "test expenditure" };
+    const result = await supertest(app)
+      .post("/logs/expenditure/new")
+      .send(body)
+      .set(headers);
+    expect(result.status).toEqual(400);
+  });
+
+  it("returns status 400 for invalid new expenditure description", async () => {
+    const headers = { Authorization: `Bearer ${token}` };
+    const body = { value: 100, description: "" };
+    const result = await supertest(app)
+      .post("/logs/expenditure/new")
+      .send(body)
+      .set(headers);
+    expect(result.status).toEqual(400);
+  });
+
+  it("returns status 404 when user is not found", async () => {
+    const randomToken = uuidv4();
+    const headers = { Authorization: `Bearer ${randomToken}` };
+    const body = { value: 100, description: "test expenditure" };
+    const result = await supertest(app)
+      .post("/logs/expenditure/new")
       .send(body)
       .set(headers);
     expect(result.status).toEqual(404);
