@@ -6,7 +6,8 @@ async function getLogs(req, res) {
   try {
     const { value: authorization, error: authorizationError } =
       authorizationSchema.validate(req.headers.authorization);
-    if (authorizationError) throw new errorWithStatus(400);
+    if (authorizationError) throw new errorWithStatus(401);
+
     const token = authorization.replace("Bearer ", "");
 
     const dbStatement = await connection.query(
@@ -31,19 +32,20 @@ async function getLogs(req, res) {
 
 async function postNewLog(req, res) {
   try {
+    const { value: authorization, error: authorizationError } =
+      authorizationSchema.validate(req.headers.authorization);
+    if (authorizationError) throw new errorWithStatus(401);
+
     const { value: newLog, error: newLogError } = newLogSchema.validate(
       req.body
     );
     const { value: logKind, error: logKindError } = logKindSchema.validate(
       req.params.logKind
     );
-    const { value: authorization, error: tokenError } =
-      authorizationSchema.validate(req.headers.authorization);
-    const validationError = newLogError || logKindError || tokenError;
+    const validationError = newLogError || logKindError;
     if (validationError) throw new errorWithStatus(400);
 
     const token = authorization.replace("Bearer ", "");
-
     const dbUser = await connection.query(
       `
       SELECT sessions."userId"
@@ -56,7 +58,7 @@ async function postNewLog(req, res) {
     );
 
     const user = dbUser.rows[0];
-    if (!user.userId) throw new errorWithStatus(404);
+    if (typeof user !== "object" || !user.userId) throw new errorWithStatus(404);
 
     const dbNewEntry = await connection.query(
       `

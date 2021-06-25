@@ -6,7 +6,7 @@ export default async function logout(req, res) {
   try {
     const { value: authorization, error: authorizationError } =
       authorizationSchema.validate(req.headers["authorization"]);
-    if (authorizationError) throw new errorWithStatus(400);
+    if (authorizationError) throw new errorWithStatus(401);
     const token = authorization.replace("Bearer ", "");
     await connection.query(
       `
