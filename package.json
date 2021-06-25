@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "NODE_ENV=test npx jest",
-    "start": "NODE_ENV=production node src/server.js"
+    "start": "node ./src/server.js"
   },
   "keywords": [],
   "author": "",
