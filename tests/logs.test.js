@@ -103,7 +103,7 @@ describe("GET /logs", () => {
     expect(result.status).toEqual(401);
   });
 
-  it("returns status 404 when user is not found", async () => {
+  it("returns status 404 when there is no active session with that token", async () => {
     const randomToken = uuidv4();
     const headers = { Authorization: `Bearer ${randomToken}` };
     const result = await supertest(app).get("/logs").set(headers);
@@ -165,7 +165,7 @@ describe("POST /logs/:logKind=earning/new", () => {
     expect(result.status).toEqual(400);
   });
 
-  it("returns status 404 when user is not found", async () => {
+  it("returns status 404 when there is no active session with that token", async () => {
     const randomToken = uuidv4();
     const headers = { Authorization: `Bearer ${randomToken}` };
     const body = { value: 100, description: "test earning" };
@@ -231,7 +231,7 @@ describe("POST /logs/:logKind=expenditure/new", () => {
     expect(result.status).toEqual(400);
   });
 
-  it("returns status 404 when user is not found", async () => {
+  it("returns status 404 when there is no active session with that token", async () => {
     const randomToken = uuidv4();
     const headers = { Authorization: `Bearer ${randomToken}` };
     const body = { value: 100, description: "test expenditure" };
