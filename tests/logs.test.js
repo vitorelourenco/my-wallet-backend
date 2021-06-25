@@ -20,10 +20,6 @@ let token;
 beforeAll(async () => {
   //cleanup data from previous tests
   //that used test@logs.com as email
-  await connection.query(`
-    DELETE FROM users
-    WHERE email = 'test@logs.com'
-  `);
   await connection.query(
     `
     DELETE FROM sessions
@@ -33,7 +29,8 @@ beforeAll(async () => {
       FROM users
       WHERE users.email = 'test@logs.com'
     )
-  `);
+  `
+  );
   await connection.query(
     `
     DELETE FROM logs
@@ -43,7 +40,14 @@ beforeAll(async () => {
       FROM users
       WHERE users.email = 'test@logs.com'
     )
+  `
+  );
+
+  await connection.query(`
+    DELETE FROM users
+    WHERE email = 'test@logs.com'
   `);
+  
   id = undefined;
   token = undefined;
   //
@@ -127,7 +131,6 @@ describe("GET /logs", () => {
   });
 });
 
-
 describe("POST /logs/:logKind=earning/new", () => {
   it("returns status 201 for valid new earning", async () => {
     const headers = { Authorization: `Bearer ${token}` };
@@ -193,7 +196,6 @@ describe("POST /logs/:logKind=earning/new", () => {
     expect(result.status).toEqual(404);
   });
 });
-
 
 describe("POST /logs/:logKind=expenditure/new", () => {
   it("returns status 201 for valid new expenditure", async () => {
