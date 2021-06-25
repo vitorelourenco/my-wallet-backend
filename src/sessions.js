@@ -5,7 +5,7 @@ import connection from "./database.js";
 export async function confirmSession(req,res){
   try {
     const {value: authorization, error: authorizationError} = authorizationSchema.validate(req.headers.authorization);
-    if (authorizationError) throw new errorWithStatus(400);
+    if (authorizationError) throw new errorWithStatus(401);
 
     const token = authorization.replace("Bearer ","");
 
@@ -15,7 +15,7 @@ export async function confirmSession(req,res){
       WHERE token = $1
     ;`,[token]);
 
-    if (dbSession.rows.length !== 1) throw new errorWithStatus(401);
+    if (dbSession.rows.length !== 1) throw new errorWithStatus(404);
 
     res.sendStatus(200);
   } catch (err) {

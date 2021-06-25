@@ -27,17 +27,23 @@ beforeAll(async () => {
   await connection.query(
     `
     DELETE FROM sessions
-    WHERE "userId" = $1
-  `,
-    [id]
-  );
+    WHERE "userId" 
+    IN (
+      SELECT id
+      FROM users
+      WHERE users.email = 'test@logs.com'
+    )
+  `);
   await connection.query(
     `
     DELETE FROM logs
-    WHERE "userId" = $1
-  `,
-    [id]
-  );
+    WHERE "userId" 
+    IN (
+      SELECT id
+      FROM users
+      WHERE users.email = 'test@logs.com'
+    )
+  `);
   id = undefined;
   token = undefined;
   //
