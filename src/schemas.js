@@ -1,7 +1,6 @@
 import joi from "joi";
 
 const newLogSchema = joi.object({
-  userId: joi.number().integer().min(1).required(),
   value: joi.number().integer().min(1).required(),
   description: joi.string().min(1).required(),
 });
