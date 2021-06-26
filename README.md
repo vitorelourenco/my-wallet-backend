@@ -14,6 +14,9 @@ My Wallet is a log-book web app for earnings and expenditures. Users can sign up
 - $ git clone https://github.com/vitorelourenco/my-wallet-back.git
 - $ npm i
 
+## Heads Up
+- This project has been deployed to heroku, if you would like to run it locally you can edit the database.js file to use whatever configs you need. You'll also have to edit the routes on the frontend side. The database is not included in the repo btw, you will have to create it.
+<del>
 ## Running the server
 - $ npm start 
 
@@ -24,6 +27,7 @@ My Wallet is a log-book web app for earnings and expenditures. Users can sign up
 - The app uses the port 4000 by default. You can change it if you want but if there's a conflict and you don't mind killing whatever is listening to 4000, you can run $ fuser -k 4000/tcp 
 - As of right now, it seems Jest has no support for ES Modules out of the box. The dependency "@babel/preset-env" will take care of it and will be installed upon $ npm i . If you want to use your own babel configuration file, please include: "presets": [ "@babel/preset-env" ],
 - As of right now, it seems Jest has no support for async/await out of the box. The dependency "@babel/plugin-transform-runtime" will take care of it and it will be installed upon $ npm i but remember to include:   "plugins": [ "@babel/plugin-transform-runtime" ] in your babel configuration file if you feel like using a different one. 
+</del>
 
 ## Dependencies
 - All dependencies are listed in the package.json file.
